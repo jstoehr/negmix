@@ -1,0 +1,5 @@
+useDynLib(negmix, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+import(methods, Rcpp, RcppNumerical)
+exportPattern("^[[:alpha:]]+")
+
