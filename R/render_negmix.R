@@ -51,8 +51,6 @@ render_negmix <- function(k_p, k_n, family = c("normal", "gamma"), par = list(),
     warning("unknown names in control: ", paste(unknown, collapse = ", "))
   }
   
-  if (is.null(control$k_init) & is.null(control$k_pair) & )
-  
   if (is.null(control$k_init)) {
     ctrl$k_init <- ifelse(by_pair, sample(1:k_n, 1), sample(1:k_p, 1))
   }
