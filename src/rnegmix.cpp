@@ -105,8 +105,8 @@ Rcpp::List rnegmix_model(const unsigned & n,
     
     return Rcpp::List::create(
       Rcpp::Named("sample", ans),
-      Rcpp::Named("p_accept", 1./arma::sum(f.w_p)),
-      Rcpp::Named("accept_rate", p_accept),
+      Rcpp::Named("prob_accept", 1./arma::sum(f.w_p)),
+      Rcpp::Named("freq_accept", p_accept),
       Rcpp::Named("time", cpu_time)
     );
   } else if (sig == 's') {
@@ -118,8 +118,8 @@ Rcpp::List rnegmix_model(const unsigned & n,
     
     return Rcpp::List::create(
       Rcpp::Named("sample", ans),
-      Rcpp::Named("p_accept", f.p_accept_pairing(control["delta"])),
-      Rcpp::Named("accept_rate", p_accept),
+      Rcpp::Named("prob_accept", f.p_accept_pairing(control["delta"])),
+      Rcpp::Named("freq_accept", p_accept),
       Rcpp::Named("time", cpu_time),
       Rcpp::Named("pairs", f.list_pair + 1),
       Rcpp::Named("w_pair_p", f.w_pair_p),

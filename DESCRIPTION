@@ -1,18 +1,15 @@
 Package: negmix
 Type: Package
-Title: Simulation of mixtures of distributions with signed weights
+Title: Simulating mixtures of distributions with signed weights
 Version: 1.0
 Date: 2024-02-27
 Author: Julien Stoehr
 Maintainer: <stoehr@ceremade.dauphine.fr>
-Description: Simulating mixtures of distributions with signed weights proves 
-a challenge as standard simulation algorithms are inefficient in handling the 
-negative weights. In particular, the natural representation of mixture variates 
-as associated with latent component indicators is no longer available. The package
-provides an exact accept-reject algorithm in the general case of finite signed mixtures 
-of Gamma and Normal distributions. The method relies on optimaly pairing positive 
-and negative components and designing a stratified sampling scheme on pairs.
+Description: Simulating mixtures of distributions with signed weights proves a challenge as standard simulation algorithms are inefficient in handling the negative weights. In particular, the natural representation of mixture variates as associated with latent component indicators is no longer available. The package provides an exact accept-reject algorithm in the general case of finite signed mixtures of Gamma and Normal distributions. The method relies on optimaly pairing positive and negative components and designing a stratified sampling scheme on pairs.
 License: GPL (>= 3.0)
 Imports: methods, Rcpp (>= 1.0.10), RcppNumerical
 LinkingTo: Rcpp (>= 1.0.10), RcppArmadillo, RcppNumerical, RcppEigen
 Depends: Rcpp (>= 1.0.10)
+Suggests: knitr
+VignetteBuilder: knitr
+NeedsCompilation: yes

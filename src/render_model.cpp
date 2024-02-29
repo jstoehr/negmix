@@ -29,14 +29,14 @@ Rcpp::List render_model(arma::uword & k_p,
     
     if (by_2) {
       f.create_benchmark_by_2(
-        m_p.n_rows,
-        control["k_pair"], control["k_single"], control["n_pair"],
-                control["p_min"], control["p_max"], control["p_star"],
-                        control["p_common"], control["p_rank"], control["p_limit"],
-                                                                       control["maxit_0"], control["eps_0"]);
+        control["k_init"],
+               control["k_pair"], control["k_single"], control["n_pair"],
+                       control["p_min"], control["p_max"], control["p_star"],
+                               control["p_common"], control["p_rank"], control["p_limit"],
+                                                                              control["maxit_0"], control["eps_0"]);
     } else {
       f.create_benchmark(
-        m_p.n_rows,
+        control["k_init"],
         control["p_min"], control["p_max"], control["p_star"],
                 control["p_common"], control["p_rank"],
                                             control["maxit_0"], control["eps_0"],
@@ -63,14 +63,14 @@ Rcpp::List render_model(arma::uword & k_p,
     
     if (by_2) {
       f.create_benchmark_by_2(
-        a_p.n_rows,
+        control["k_init"],
         control["k_pair"], control["k_single"], control["n_pair"],
                 control["p_min"], control["p_max"], control["p_star"],
                         control["p_common"], control["p_rank"], control["p_limit"],
                                                                        control["maxit_0"], control["eps_0"]);
     } else {
       f.create_benchmark(
-        a_p.n_rows,
+        control["k_init"],
         control["p_min"], control["p_max"], control["p_star"],
                 control["p_common"], control["p_rank"],
                                             control["maxit_0"], control["eps_0"],
