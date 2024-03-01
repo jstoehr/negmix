@@ -1,4 +1,5 @@
 \name{dnegmix}
+\alias{dnegmix}
 \alias{rnegmix}
 \alias{qnegmix}
 \alias{pnegmix}

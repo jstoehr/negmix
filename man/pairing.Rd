@@ -1,4 +1,5 @@
 \name{pairing}
+\alias{pairing}
 \title{Signed mixtures of distributions}
 \description{
 Simplex algorithm to find a decomposition of a signed mixture into a mixture of two-component signed mixture and a residual signed mixture.

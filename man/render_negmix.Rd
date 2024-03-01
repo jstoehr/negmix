@@ -1,4 +1,5 @@
 \name{render_negmix}
+\alias{render_negmix}
 \title{Signed mixtures of distributions}
 \description{
 \code{render_negmix} is used to generate random examples of mixture of distributions with signed weights.  
