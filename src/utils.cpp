@@ -74,11 +74,11 @@ void merge_grids(arma::field<arma::vec> & g_loc,
 // ------------------------------------------------------
 
 
-arma::uvec n_non_zero_by_col(const arma::mat & map) {
-  arma::uvec ans = arma::zeros<arma::uvec>(map.n_cols);
+arma::uvec n_non_zero_by_row(const arma::mat & map) {
+  arma::uvec ans = arma::zeros<arma::uvec>(map.n_rows);
   arma::uvec indices;
-  for (arma::uword k = 0; k < map.n_cols; k++){
-    indices = find(map.col(k) > 0.);
+  for (arma::uword k = 0; k < map.n_rows; k++){
+    indices = find(map.row(k) > 0.);
     ans.at(k) = indices.n_rows;
   }
   return ans;

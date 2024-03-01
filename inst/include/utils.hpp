@@ -112,6 +112,6 @@ void merge_grids(arma::field<arma::vec> & g_loc,
                  arma::vec & grid, 
                  arma::vec & h);
 
-arma::uvec n_non_zero_by_col(const arma::mat & map);
+arma::uvec n_non_zero_by_row(const arma::mat & map);
 
 #endif /* INST_INCLUDE_UTILS_HPP_ */
