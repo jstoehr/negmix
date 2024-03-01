@@ -1,5 +1,12 @@
 useDynLib(negmix, .registration=TRUE)
+importFrom("stats", "rgamma", "runif")
 importFrom(Rcpp, evalCpp)
 import(methods, Rcpp, RcppNumerical)
-exportPattern("^[[:alpha:]]+")
+export(dnegmix)
+export(pnegmix)
+export(qnegmix)
+export(rnegmix)
+export(pairing)
+export(render_negmix)
+#exportPattern("^[[:alpha:]]+")
 
