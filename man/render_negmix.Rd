@@ -76,7 +76,7 @@ par <- render_negmix(k_p, k_n,
 x_min <- min(c(par$mean_p, par$mean_n) - 2 * c(par$sd_p, par$sd_n))
 x_max <- max(c(par$mean_p, par$mean_n) + 2 * c(par$sd_p, par$sd_n))
 plot(x <- seq(x_min, x_max, .001),
-  dnegmix(x, ex, family = fam),
+  dnegmix(x, par, family = fam),
   type = "l", main = "Signed mixture pdf"
 )
 }
