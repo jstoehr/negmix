@@ -57,13 +57,28 @@ rnegmix <- function(n, par, family = c("normal", "gamma"), delta = NULL,
   if (length(unknown <- names_control[!names_control %in% names_ctrl])) {
     warning("unknown names in control: ", paste(unknown, collapse = ", "))
   }
-  if (!is.null(delta)) {
-    if (ctrl$eps_d == 0. || ctrl$eps_d > (1. - delta)/delta) {
-      stop("control$eps_d should be strictly between 0 and (1. - delta)/delta")
+  
+  if (method == "stratified") {
+    if (!is.null(delta)) {
+      if (ctrl$eps_d == 0. || ctrl$eps_d > (1. - delta)/delta) {
+        stop("control$eps_d should be strictly between 0 and (1. - delta)/delta")
+      }
     }
+    if (ctrl$use_mono & ctrl$optim) {
+      warning("argument control$use_mono ignored when control$optim = TRUE")
+    }
+    set_ignored <- c("precision", "breaks")
+  } else if (method == "vanilla") {
+    set_ignored <- c("eps_d", "optim", "use_mono", "n_points", 
+                     "maxit", "eps_f", "eps_g", "tol_simplex",
+                     "precision", "breaks")
+  } else {
+    set_ignored <- c("eps_d", "optim", "use_mono", "n_points", 
+                     "maxit", "eps_f", "eps_g", "tol_simplex")
   }
-  if (ctrl$use_mono & ctrl$optim) {
-    warning("argument control$use_mono ignored when control$optim = TRUE")
+  
+  if (length(ignored <- names_control[names_control %in% set_ignored])) {
+    warning("argument ignored in control: ", paste(ignored, collapse = ", "))
   }
   out <- cpp_rnegmix(n, par, family, method, ctrl)
   out[!names(out) %in% c("pairs")] <- lapply(out[!names(out) %in% c("pairs")], as.numeric)
