@@ -26,7 +26,7 @@ bool newton_raphson(f_zero & fun,
   }
   if (count == maxit_0) {
     // printf("x %f f %f df %f\n", x, f, df);
-    Rcpp::stop(" Newton Raphson method failed\n");
+    Rcpp::warning(" the Newton Raphson method failed, possibly due to insufficient numeric precision\n");
   }
   return out;
 }
