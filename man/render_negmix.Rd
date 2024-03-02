@@ -36,10 +36,10 @@ The method first initializes the parameters of each negative weight component \e
 
 The \code{control} argument is a list that can supply any of the following inputs:
   \describe{
-  \item{p_min, p_max}{Lower and upper bound for \eqn{1\big/\sum_{k = 1}^P w_{p,k}}. Control how close the negative part of the signed mixture is to the positive part.}
-  \item{p_star}{The probability that, when initializing a negative component, the two-component signed mixture computed is associated with the largest possible weight \eqn{w^{\rm pair}_{n,j}} for the negative component.}
-  \item{p_common}{The probability that, when initializing a negative component, \eqn{f_{j}} and \eqn{g_{j}} share common parameters with the associated positive component.}
-  \item{p_rank}{The probability that, when initializing a negative component, \eqn{1 - w^{\rm pair}_{n,j}\big/w^{\rm pair}_{p,j}} is between \code{p_min} and \code{p_max}.}
+  \item{p_min, p_max}{Lower and upper bound for \eqn{1\big/\sum_{k = 1}^P w_{p,k}}. Control how close the negative part of the signed mixture is to the positive part. Default to 0 and 0.95.}
+  \item{p_star}{The probability that, when initializing a negative component, the two-component signed mixture computed is associated with the largest possible weight \eqn{w^{\rm pair}_{n,j}} for the negative component. Default to 0.8.}
+  \item{p_common}{The probability that, when initializing a negative component, \eqn{f_{j}} and \eqn{g_{j}} share common parameters with the associated positive component. Default to 0.2.}
+  \item{p_rank}{The probability that, when initializing a negative component, \eqn{1 - w^{\rm pair}_{n,j}\big/w^{\rm pair}_{p,j}} is between \code{p_min} and \code{p_max}. Default to 1.}
   \item{k_p_init}{positive integer. The \code{k_p_init} first positive components are randomly set; if \code{k_p_init}\eqn{\leq}\code{k_n}, the \code{k_p_init} first positive components are used to initialized the negative components parameters; otherwise the initialization is achieved with a random set of components among the \code{k_p_init} first. Default to a random value, constrained to be lower than \code{min(k_n, k_p)} when \code{by_pair = TRUE}.}
   \item{k_p_pair}{The number of positive weight components to be used to build the two-component signed mixtures included in the model. The \code{k_p_pair - k_p_init} positive components are initialized from the \code{k_n} negative components. Ignored when \code{by_pair = FALSE}. Ranges between \code{k_p_init} and \code{k_p}. Default to a random value.}
     \item{n_pair}{The minimum number of two-component signed mixture to include in the model. Ignored when \code{by_pair = FALSE}. Ranges between \code{k_n + control$k_p_pair - control$k_p_init} and \code{k_n * (control$k_p_pair - control$k_p_init + 1)}. Default to a random value.}

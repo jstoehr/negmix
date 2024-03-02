@@ -68,18 +68,20 @@ rnegmix(n, par, family = c("normal", "gamma"),
   \item{inv_cdf}{Inverse sampling with a piecewise linear approximation of the inverse distribution function.}
   }
   
-  The \code{control} argument is a list that can supply any of the following inputs. It is only useful to compute the piecewise proposal distributions (histograms for each pairs of components) for the accept-reject method when \code{method = "stratified"}.
+  The \code{control} argument is a list that can supply any of the following inputs. It is mainly useful to compute the piecewise proposal distributions (histograms for each pairs of components) for the accept-reject method when \code{method = "stratified"}.
   \describe{
-  \item{n_points}{The initial number of cells for the histogram. Default to 10.}
-  \item{use_mono}{Logical; if TRUE the histogram computation uses the monoticity of the mixture on cells where it is known; if FALSE the histogram is computed as a difference of histograms. Default to FALSE.}
-  \item{optim}{Logical; if TRUE the location of all local extrema of the mixture are computed (using the L-BFGS method) and added to the initial breaking points. The histogram is then computed using that the mixture distribution is a monotonic function on each cell. Default to TRUE.}
-  \item{eps_d}{Largest possible error on the histogram to achieve the acceptance rate \code{delta} on a given pair of components. Ranges strictly betwenn 0 and (1 - \code{delta})/\code{delta}. Default to 0.9 * (1. - \code{delta})/\code{delta}.}
-  \item{maxit}{The maximum number of iterations for the L-BFGS method. Default to 300.}
+  \item{n_points}{The initial number of cells for the histogram. Only used by \code{method = "stratified"}. Default to 10.}
+  \item{use_mono}{Logical; if TRUE the histogram computation uses the monoticity of the mixture on cells where it is known; if FALSE the histogram is computed as a difference of histograms. Only used by \code{method = "stratified"}. Default to FALSE.}
+  \item{optim}{Logical; if TRUE the location of all local extrema of the mixture are computed (using the L-BFGS method) and added to the initial breaking points. The histogram is then computed using that the mixture distribution is a monotonic function on each cell. Only used by \code{method = "stratified"}. Default to TRUE.}
+  \item{eps_d}{Largest possible error on the histogram to achieve the acceptance rate \code{delta} on a given pair of components. Ranges strictly betwenn 0 and (1 - \code{delta})/\code{delta}. Only used by \code{method = "stratified"}. Default to 0.9 * (1. - \code{delta})/\code{delta}.}
+  \item{maxit}{The maximum number of iterations for the L-BFGS method. Only used by \code{method = "stratified"}. Default to 300.}
   \item{eps_f}{Stopping rule parameter for the L-BFGS method. The algorithm stops if
-  the relative tolerance for two consecutive function values is lower than \code{eps_f}. Default to 1e-5.}
+  the relative tolerance for two consecutive function values is lower than \code{eps_f}. Only used by \code{method = "stratified"}. Default to 1e-5.}
   \item{eps_g}{Stopping rule parameter for the L-BFGS method. The algorithm stops if
-  the norm of the gradient at \code{x} is lower than \code{eps_g} * max(1, ||x||). Default to 1e-6.}
-  \item{tol_simplex}{The floating point tolerance to be used in tests of equality in the simplex method. Default to 1e-10.}
+  the norm of the gradient at \code{x} is lower than \code{eps_g} * max(1, ||x||). Only used by \code{method = "stratified"}. Default to 1e-6.}
+  \item{tol_simplex}{The floating point tolerance to be used in tests of equality in the simplex method. Only used by \code{method = "stratified"}. Default to 1e-10.}
+  \item{precision}{numerical precison to compute the approximate inverse distribution function. A piecewise linear function is used. Only used by \code{method = "inv_cdf"}. Default to 1e-10.}
+  \item{breaks}{initial number of interpolating points to be used. Only used by \code{method = "inv_cdf"}. Default to 100.}
   }
 }
 \references{
