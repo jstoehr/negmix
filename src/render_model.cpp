@@ -29,18 +29,18 @@ Rcpp::List render_model(arma::uword & k_p,
     
     if (by_2) {
       f.create_benchmark_by_2(
-        control["k_init"],
-               control["k_pair"], control["k_single"], control["n_pair"],
+        control["k_p_init"],
+               control["k_p_pair"], control["n_single"], control["n_pair"],
                        control["p_min"], control["p_max"], control["p_star"],
                                control["p_common"], control["p_rank"], control["p_limit"],
                                                                               control["maxit_0"], control["eps_0"]);
     } else {
       f.create_benchmark(
-        control["k_init"],
-        control["p_min"], control["p_max"], control["p_star"],
-                control["p_common"], control["p_rank"],
-                                            control["maxit_0"], control["eps_0"],
-                                                                       control["maxit"], control["eps_f"], control["eps_g"]);
+        control["k_p_init"],
+               control["p_min"], control["p_max"], control["p_star"],
+                       control["p_common"], control["p_rank"],
+                                                   control["maxit_0"], control["eps_0"],
+                                                                              control["maxit"], control["eps_f"], control["eps_g"]);
     }
     
     return Rcpp::List::create(
@@ -49,7 +49,8 @@ Rcpp::List render_model(arma::uword & k_p,
       Rcpp::Named("sd_p", f.sd_p),
       Rcpp::Named("w_n", f.w_n),
       Rcpp::Named("mean_n", f.mean_n),
-      Rcpp::Named("sd_n", f.sd_n)
+      Rcpp::Named("sd_n", f.sd_n),
+      Rcpp::Named("control", control)
     );
     
   } else if (sig == 'g') {
@@ -63,18 +64,18 @@ Rcpp::List render_model(arma::uword & k_p,
     
     if (by_2) {
       f.create_benchmark_by_2(
-        control["k_init"],
-        control["k_pair"], control["k_single"], control["n_pair"],
-                control["p_min"], control["p_max"], control["p_star"],
-                        control["p_common"], control["p_rank"], control["p_limit"],
-                                                                       control["maxit_0"], control["eps_0"]);
+        control["k_p_init"],
+               control["k_p_pair"], control["n_single"], control["n_pair"],
+                       control["p_min"], control["p_max"], control["p_star"],
+                               control["p_common"], control["p_rank"], control["p_limit"],
+                                                                              control["maxit_0"], control["eps_0"]);
     } else {
       f.create_benchmark(
-        control["k_init"],
-        control["p_min"], control["p_max"], control["p_star"],
-                control["p_common"], control["p_rank"],
-                                            control["maxit_0"], control["eps_0"],
-                                                                       control["maxit"], control["eps_f"], control["eps_g"]);
+        control["k_p_init"],
+               control["p_min"], control["p_max"], control["p_star"],
+                       control["p_common"], control["p_rank"],
+                                                   control["maxit_0"], control["eps_0"],
+                                                                              control["maxit"], control["eps_f"], control["eps_g"]);
     }
     
     return Rcpp::List::create(
@@ -83,7 +84,8 @@ Rcpp::List render_model(arma::uword & k_p,
       Rcpp::Named("rate_p", f.beta_p),
       Rcpp::Named("w_n", f.w_n),
       Rcpp::Named("shape_n", f.alpha_n),
-      Rcpp::Named("rate_n", f.beta_n)
+      Rcpp::Named("rate_n", f.beta_n),
+      Rcpp::Named("control", control)
     );
     
   } else {
