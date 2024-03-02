@@ -127,18 +127,33 @@ void f_model::build_pairs(const double & delta, const double & tol_simplex) {
 // ------------------------------------------------------
 
 
-arma::mat f_model::augment_n_pair(const arma::uword & n_pair, const double & p_limit) {
+arma::mat f_model::augment_n_pair(const arma::uword & k_p_init,
+                                  const arma::uword & k_p_pair,
+                                  const arma::uword & n_pair, 
+                                  const double & p_limit) {
   arma::uword k;
   arma::mat map = this->map_pairs(p_limit);
-  arma::uvec count = n_non_zero_by_col(map);
-  while (arma::sum(count) < n_pair) {
+  arma::uvec count = n_non_zero_by_row(map.rows(k_p_init, k_p_pair - 1));
+  // printf("augment_n_pair\n");
+  // map.print();
+  // count.print();
+  // printf("starting value %d\n", k_n + arma::sum(count));
+  unsigned counter = 0;
+  while (k_n + arma::sum(count) < n_pair & counter < 10 * (k_p_pair - k_p_init)) {
     // --- Replace a positive weight component by a positive weight component
     // --- that can balance more negative weight component
     k = count.index_min();
-    this->set_rand_par_p(k);
+    this->set_rand_par_p(k_p_init + k);
     map = this->map_pairs(p_limit);
-    count = n_non_zero_by_col(map);
-  } 
+    count = n_non_zero_by_row(map.rows(k_p_init, k_p_pair - 1));
+    ++counter;
+    // count.t().print();
+    // printf("current value %d\n", k_n + arma::sum(count));
+  }
+  
+  if (k_n + arma::sum(count) < n_pair) {
+    Rcpp::warning("could only include %d natural pairs\n", k_n + arma::sum(count));
+  }
   return map;
 }
 
@@ -169,9 +184,9 @@ void f_model::ctrl_accept_rate(const double & a_ref, const double & p_max) {
 // ------------------------------------------------------
 
 
-void f_model::create_benchmark_by_2(const arma::uword & k_init,
-                                    const arma::uword & k_pair,
-                                    const arma::uword & k_single,
+void f_model::create_benchmark_by_2(const arma::uword & k_p_init,
+                                    const arma::uword & k_p_pair,
+                                    const arma::uword & n_single,
                                     const arma::uword & n_pair,
                                     const double & p_min,
                                     const double & p_max,
@@ -185,32 +200,32 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
   // --- k_p positive weight components
   // --- k_n negative weight components
   // --- n_pair number of natural pairs
-  // --- k_pair <= k_p number of positive component involved in natural pairing
-  // --- k_init <= k_pair and k_n positive weight components used to init negative parameters
-  // --- k_single <= k_p - k_pair positive component that cannot balance any negative weight components
+  // --- k_p_pair <= k_p number of positive component involved in natural pairing
+  // --- k_p_init <= k_p_pair and k_n positive weight components used to init negative parameters
+  // --- n_single <= k_p - k_p_pair positive component that cannot balance any negative weight components
   
-  arma::uword k_temp = k_n + k_pair - k_init, i, j;
+  arma::uword k_temp = k_n + k_p_pair - k_p_init, i, j;
   arma::umat l_init(2, k_temp);
   arma::uvec init_par(k_temp);
   arma::vec a_pair(n_pair);
   
   for (arma::uword k = 0; k < k_n; k++) {
     // --- Negative weight component based on available positive weight component
-    if (k < k_init) {
+    if (k < k_p_init) {
       l_init.at(0, k) = k;
       l_init.at(1, k) = k;
     } else {
-      l_init.at(0, k) = arma::randi<arma::uword>(arma::distr_param(0, k_init - 1));
+      l_init.at(0, k) = arma::randi<arma::uword>(arma::distr_param(0, k_p_init - 1));
       l_init.at(1, k) = k;
     }
     init_par.at(k) = 1;
   }
   
-  for (arma::uword k = k_init; k < k_pair; k++) {
+  for (arma::uword k = k_p_init; k < k_p_pair; k++) {
     // --- Positive weight component based on available negative weight component
-    l_init.at(0, k + k_n - k_init) = k;
-    l_init.at(1, k + k_n - k_init) = arma::randi<arma::uword>(arma::distr_param(0, k_n - 1));
-    init_par.at(k + k_n - k_init) = 2;
+    l_init.at(0, k + k_n - k_p_init) = k;
+    l_init.at(1, k + k_n - k_p_init) = arma::randi<arma::uword>(arma::distr_param(0, k_n - 1));
+    init_par.at(k + k_n - k_p_init) = 2;
   }
   
   // --- First pair is set to control the overall acceptance rate
@@ -223,10 +238,11 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
   // printf(" DONE!\n");
   
   // --- Initialization of negative and pair parameters
-  // printf(" Initialization components paramater...");
+  // printf(" Initialization components parameter...", k_temp);
   for (arma::uword k = 1; k < k_temp; k++) {
     i = l_init.at(0, k);
     j = l_init.at(1, k);
+    // printf("p %d n %d\n", i, j);
     is_star = (arma::randu() < p_star);
     has_common = (arma::randu() < p_common);
     if (arma::randu() < p_rank) {
@@ -234,6 +250,7 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
     } else {
       p = arma::randu();
     }
+    // printf("ready to render\n");
     if (init_par.at(k) == 1) {
       this->render_pair_from_pc(i, j, p, is_star, has_common, maxit_0, eps_0);
     } else if (init_par.at(k) == 2) {
@@ -245,8 +262,8 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
   
   // --- Correcting parameters to get exactly n_pairs
   // printf(" Correcting number of pairs...");
-  if (k_temp < n_pair) {
-    arma::mat map = this->augment_n_pair(n_pair, p_limit);
+  if (k_temp < n_pair and k_p_pair > k_p_init) {
+    arma::mat map = this->augment_n_pair(k_p_init, k_p_pair, n_pair, p_limit);
     for (arma::uword k = 1; k < k_temp; k++) {
       i = l_init.at(0, k);
       j = l_init.at(1, k);
@@ -294,14 +311,14 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
   this->normalize_weight();
   
   // --- Dealing with single positive components
-  if (k_p - k_pair > 0) {
+  if (k_p - k_p_pair > 0) {
     // printf(" Adding single positive weight components...");
-    arma::uword k_p_1 = k_p - k_pair - k_single;
-    this->add_single_comp(k_p_1, k_single);
+    arma::uword k_p_1 = k_p - k_p_pair - n_single;
+    this->add_single_comp(k_p_1, n_single);
     double coef = arma::randu() * (p_max * sum(w_p) - 1.) / (1. - p_max);
-    arma::vec prop = arma::randu(k_p - k_pair);
+    arma::vec prop = arma::randu(k_p - k_p_pair);
     prop /= arma::sum(prop);
-    w_p.tail(k_p - k_pair) = coef * prop;
+    w_p.tail(k_p - k_p_pair) = coef * prop;
     this->normalize_weight();
     // printf(" DONE!\n");
   }
@@ -317,7 +334,7 @@ void f_model::create_benchmark_by_2(const arma::uword & k_init,
 // ------------------------------------------------------
 
 
-void f_model::create_benchmark(const arma::uword & k_init,
+void f_model::create_benchmark(const arma::uword & k_p_init,
                                const double & p_min,
                                const double & p_max,
                                const double & p_star,
@@ -336,10 +353,10 @@ void f_model::create_benchmark(const arma::uword & k_init,
   
   for (arma::uword k = 0; k < k_n; k++) {
     // --- Negative weight component based on available positive weight component
-    if (k < k_init) {
+    if (k < k_p_init) {
       l_pc.at(k) = k;
     } else {
-      l_pc.at(k) = arma::randi<arma::uword>(arma::distr_param(0, k_init - 1));
+      l_pc.at(k) = arma::randi<arma::uword>(arma::distr_param(0, k_p_init - 1));
     }
   }
   
@@ -354,7 +371,7 @@ void f_model::create_benchmark(const arma::uword & k_init,
   // printf(" DONE!\n");
   
   // --- Initializing negative weight components parameters
-  // printf(" Initialization negative weight components paramater...");
+  // printf(" Initialization negative weight components parameter...");
   for (arma::uword k = 1; k < k_n; k++) {
     i = l_pc.at(k);
     has_common = (arma::randu() < p_common);
@@ -367,25 +384,28 @@ void f_model::create_benchmark(const arma::uword & k_init,
     a_s.at(k) = this->a_star_pair(i, k);
   }
   // printf(" DONE!\n");
-  
-  // --- Compute weight to balance negetive part
-  // printf(" Computing weights...");
-  double w_n_ref = median(1. / (a_s - 1.));
   arma::vec coef = arma::randu(k_n);
   coef /= arma::sum(coef);
-  arma::mat w_p_temp(k_p, k_n);
-  for (arma::uword k = 1; k < k_n; k++) {
-    i = l_pc.at(k);
-    w_n.at(k) = coef.at(k) * w_n_ref;
-    w_p_temp.at(i, k) = w_n.at(k) * arma::randu() * a_s.at(k);
-    w_p_temp.col(k) = this->w_valid_mixt(i, k, w_p_temp.at(i, k), w_n.at(k), 
-                 maxit_0, eps_0, maxit, eps_f, eps_g);
+  if (k_p > 1) {
+    // --- Compute weight to balance negative part
+    // printf(" Computing weights...");
+    double w_n_ref = arma::median(1. / (a_s.elem(find(a_s > 1.)) - 1.));
+    arma::mat w_p_temp(k_p, k_n);
+    for (arma::uword k = 0; k < k_n; k++) {
+      i = l_pc.at(k);
+      w_n.at(k) = coef.at(k) * w_n_ref;
+      w_p_temp.at(i, k) = w_n.at(k) * arma::randu() * a_s.at(k);
+      w_p_temp.col(k) = this->w_valid_mixt(i, k, w_p_temp.at(i, k), w_n.at(k),
+                   maxit_0, eps_0, maxit, eps_f, eps_g);
+    }
+    // printf(" DONE!\n");
+    w_p = arma::sum(w_p_temp, 1);
+  } else {
+    w_n = coef;
+    w_p = arma::sum(a_s % coef);
   }
-  // printf(" DONE!\n");
-  
-  w_p = arma::sum(w_p_temp, 1);
   this->normalize_weight();
-  
+
   // --- Add first component with proper coefficient to control acceptance rate
   this->ctrl_accept_rate(a_ref, p_max);
   this->normalize_weight();
