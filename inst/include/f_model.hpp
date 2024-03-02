@@ -96,6 +96,8 @@ public:
   virtual void set_rand_par_p(const arma::uword & k){};
   
   arma::mat augment_n_pair(
+      const arma::uword & k_p_init,
+      const arma::uword & k_p_pair,
       const arma::uword & n_pair, 
       const double & p_limit
   );
@@ -128,9 +130,9 @@ public:
   
   // --- Benchmark generator
   void create_benchmark_by_2(
-      const arma::uword & k_init, 
-      const arma::uword & k_pair,
-      const arma::uword & k_single, 
+      const arma::uword & k_p_init, 
+      const arma::uword & k_p_pair,
+      const arma::uword & n_single, 
       const arma::uword & n_pair,
       const double & p_min, 
       const double & p_max,
@@ -143,7 +145,7 @@ public:
   );
   
   void create_benchmark(
-      const arma::uword & k_init,
+      const arma::uword & k_p_init,
       const double & p_min,
       const double & p_max,
       const double & p_star,
