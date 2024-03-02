@@ -85,7 +85,7 @@ void f_normix::add_single_comp(const arma::uword & k_1, const arma::uword & k_2)
   double max = mean_p.head(k_p - k_1 - k_2).max();
   if (min == max) {
     min = std::min(mean_n.min(), min);
-    max = std::max(mean_n.max(), max);
+    max = 1.1 * std::max(mean_n.max(), max);
   }
   
   // --- Containers
@@ -150,7 +150,7 @@ arma::vec f_normix::w_valid_mixt(const arma::uword & i,
   int res = bfgs_box(f2, x_min, f_min, maxit, eps_f, eps_g);
   if (res != 0) {
     x_min = 0.5 * (inf + sup);
-    Rcpp::warning(" Failed to find the minimum on the negative support. Correction applied.");
+    // Rcpp::warning(" Failed to find the minimum on the negative support. Correction applied.");
   }
   
   // --- Optimization
@@ -161,7 +161,7 @@ arma::vec f_normix::w_valid_mixt(const arma::uword & i,
   double x_opt = x_min, f_opt;
   res = bfgs_box(f, x_opt, f_opt, maxit, eps_f, eps_g);
   if (res != 0) {
-    Rcpp::warning(" Failed to find proper weight correction. Setting new reference weight.");
+    // Rcpp::warning(" Failed to find proper weight correction. Setting new reference weight.");
   }
   
   arma::vec w_insert;
