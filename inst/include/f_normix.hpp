@@ -61,7 +61,7 @@ public:
       const double & eps_0);
   
   void set_rand_par_p(const arma::uword & k) {
-    sd_p.at(k) = sd_p.max() * (1. + 0.5 * arma::randu());
+    sd_p.at(k) = sd_n.max() * (1. + 0.5 * arma::randu());
   };
   
   void add_single_comp(const arma::uword & k_1, const arma::uword & k_2);
