@@ -30,13 +30,14 @@ void f_gammix::render_pair_from_pc(const arma::uword & i,
     alpha_n.at(j) = alpha_p.at(i);
     b_n = beta_p.at(i) * exp(-log(1 - p_)/alpha_p.at(i));
   } else {
-    render_alpha_n f_an(alpha_p.at(i), beta_p.at(i), target, lambda);
+    render_alpha_n f_an(alpha_p.at(i), beta_p.at(i), target, 
+                        std::max(lambda, alpha_p.at(i) * 1.1 / log(2)));
     alpha_n.at(j) = alpha_p.at(i) * 1.1;
     out = newton_raphson_right(f_an, alpha_n.at(j), f, df, maxit_0, eps_0);
     b_n = alpha_n.at(j)/alpha_p.at(i) * beta_p.at(i);
-    if (out) {
-      // --- Equality case
-      b_n = beta_p.at(i) * exp(-log(1 - p_)/alpha_p.at(i));
+    if (out or isinf(alpha_n.at(j))) {
+      alpha_n.at(j) = alpha_p.at(i) * (1. + 0.1 * arma::randu());
+      b_n = beta_p.at(i) * exp(-log(1 - p_)/alpha_n.at(j));
     }
   }
   
@@ -48,7 +49,8 @@ void f_gammix::render_pair_from_pc(const arma::uword & i,
     p_ = arma::randu(arma::distr_param(p_, p));
   }
   target = log(1./(1. - p_));
-  render_beta_n f_bn(alpha_p.at(i), beta_p.at(i), alpha_n.at(j), target, lambda);
+  render_beta_n f_bn(alpha_p.at(i), beta_p.at(i), alpha_n.at(j), target, 
+                     std::max(lambda, b_n * 1.1 / log(2)));
   b_n *= 1.1;
   out = newton_raphson_right(f_bn, b_n, f, df, maxit_0, eps_0);
   beta_n.at(j) = b_n;
@@ -211,7 +213,7 @@ arma::vec f_gammix::w_valid_mixt(const arma::uword & i,
   int res = bfgs_box(f2, x_min, f_min, maxit, eps_f, eps_g);
   if (res != 0) {
     x_min = 0.5 * (inf + sup);
-    Rcpp::warning(" Failed to find the minimum on the negative support. Correction applied.");
+    // Rcpp::warning(" Failed to find the minimum on the negative support. Correction applied.");
   }
 
   // --- Optimization
@@ -222,7 +224,7 @@ arma::vec f_gammix::w_valid_mixt(const arma::uword & i,
   double x_opt = x_min, f_opt;
   res = bfgs_box(f, x_opt, f_opt, maxit, eps_f, eps_g);
   if (res != 0) {
-    Rcpp::warning(" Failed to find proper weight correction. Setting new reference weight.");
+    // Rcpp::warning(" Failed to find proper weight correction. Setting new reference weight.");
   }
 
   arma::vec w_insert;
