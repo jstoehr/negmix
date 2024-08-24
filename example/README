@@ -1,0 +1,8 @@
+negmix_gam: folder with example of signed mixture of Gamma distributions
+negmix_norm: folder with example of signed mixture of Normal distributions
+
+main.R: basic functions example from the package
+negmix_example.R: model generator used to create examples from https://arxiv.org/abs/2401.16828
+xp_run.R: code to reproduce the expreiments run from https://arxiv.org/abs/2401.16828
+xp_combine.R: code to combine results of the experiments from https://arxiv.org/abs/2401.16828
+xp_analysis.R: code to reproduce the graphics from https://arxiv.org/abs/2401.16828
