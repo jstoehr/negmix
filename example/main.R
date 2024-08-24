@@ -12,7 +12,7 @@ par(mai = c(0.8, 0.5, 0.5, 0.1), family = "serif", cex.lab = 1.2, cex.axis = 0.9
 # ------------------------------------------------------
 # ------------------------------------------------------
 
-case <- "norm"
+case <- "gam"
 if (case == "norm") {
   family <- "normal"
 } else if (case == "gam") {
@@ -112,7 +112,7 @@ pl <- pl + theme_bw() +
   theme(legend.position = c(.87, .87)) +
   labs(x = element_blank(), y = element_blank())
 pl <- pl + geom_histogram(aes(y = after_stat(density)),
-                          binwidth = (max(out$sample) - min(out$sample))/50,
+                          binwidth = (max(out$sample) - min(out$sample))/150,
                           fill = "grey70", colour = "grey70", alpha = .8)
 pl <- pl + stat_function(fun = dnegmix,
                          args = list(par, family),
