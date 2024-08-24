@@ -9,6 +9,10 @@ a_star_gam <- function(alpha_p, beta_p, alpha_n, beta_n, do_log) {
     .Call(`_negmix_a_star_gam`, alpha_p, beta_p, alpha_n, beta_n, do_log)
 }
 
+toto <- function(a, b) {
+    .Call(`_negmix_toto`, a, b)
+}
+
 cpp_map_pairs <- function(delta, par, family) {
     .Call(`_negmix_cpp_map_pairs`, delta, par, family)
 }

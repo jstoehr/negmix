@@ -42,6 +42,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// toto
+double toto(double a, double b);
+RcppExport SEXP _negmix_toto(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(toto(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_map_pairs
 arma::mat cpp_map_pairs(const double& delta, const Rcpp::List& par, const std::string& family);
 RcppExport SEXP _negmix_cpp_map_pairs(SEXP deltaSEXP, SEXP parSEXP, SEXP familySEXP) {
@@ -175,6 +187,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_negmix_a_star_norm", (DL_FUNC) &_negmix_a_star_norm, 5},
     {"_negmix_a_star_gam", (DL_FUNC) &_negmix_a_star_gam, 5},
+    {"_negmix_toto", (DL_FUNC) &_negmix_toto, 2},
     {"_negmix_cpp_map_pairs", (DL_FUNC) &_negmix_cpp_map_pairs, 3},
     {"_negmix_build_pairing", (DL_FUNC) &_negmix_build_pairing, 4},
     {"_negmix_dnormix", (DL_FUNC) &_negmix_dnormix, 4},

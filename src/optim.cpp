@@ -16,7 +16,7 @@ bool newton_raphson(f_zero & fun,
                     const double & eps_0) {
   bool out = fun.grad(x, f, df);
   int count = 1;
-  while (abs(f) > eps_0 & count < maxit_0) {
+  while (abs(f) > eps_0 and count < maxit_0) {
     x = x - f/df;
     out = fun.grad(x, f, df);
     if (out){

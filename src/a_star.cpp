@@ -56,3 +56,9 @@ double a_star_gam(const double & alpha_p,
     return exp(a);
   }
 }
+
+// [[Rcpp::export]]
+double toto(double a, double b) {
+  double c = arma::randi<double>(arma::distr_param(a, b));
+  return c;
+}

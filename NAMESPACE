@@ -8,5 +8,7 @@ export(qnegmix)
 export(rnegmix)
 export(pairing)
 export(render_negmix)
+export(a_star_norm)
+export(cpp_map_pairs)
 #exportPattern("^[[:alpha:]]+")
 
