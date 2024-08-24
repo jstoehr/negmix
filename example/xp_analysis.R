@@ -4,7 +4,7 @@ library(ggplot2)
 library(scales)
 library(gridExtra)
 
-save_fig <- TRUE
+save_fig <- FALSE
 # --- All model 
 dir_fig <- "example/figures/"
 if (!dir.exists(dir_fig)) {
@@ -24,7 +24,7 @@ file_fam <- paste0(dir_fig_fam, "rand_negmix_", family)
 size <- 500
 res <- NULL
 for (case in set_case) {
-  source("example/xp_run.R")
+  source("xp_combine.R")
   
   if (case == "norm") {
     output$model <- "Normal signed mixture"
@@ -480,7 +480,7 @@ if (save_fig) {
 }
 
 
-ggplot(res, aes(x = cat, y = p)) + geom_boxplot() +
+ggplot(res, aes(x = cat, y = prob_s)) + geom_boxplot() +
   facet_grid(model~delta) +
   theme_bw() +
   theme(legend.position="bottom",
